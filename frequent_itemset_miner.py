@@ -17,7 +17,7 @@ any order.
 
 Do not change the signature of the apriori and alternative_miner methods as they will be called by the test script.
 
-__authors__ = "<write here your group, first name(s) and last name(s)>"
+__authors__ = Group23, Cyril Bousmar, Mohamed-Anass Gallass
 """
 
 
