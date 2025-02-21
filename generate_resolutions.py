@@ -54,12 +54,12 @@ def generate_res():
 
     if dataset_name == "all":
         for name in DATASETS.keys():
-            for filepath, min_freq in tqdm(DATASETS[name], desc=f"Running {algorithm} on {name} dataset"):
+            for filepath, min_freq in tqdm(DATASETS[name], desc=f"Running `{algorithm}` on `{name}` dataset"):
                 if algorithm == "apriori":
                     apriori(filepath, min_freq, True)
     
     elif dataset_name in DATASETS:
-        for filepath, min_freq in tqdm(DATASETS[dataset_name], desc=f"Running {algorithm} on {dataset_name} dataset"):
+        for filepath, min_freq in tqdm(DATASETS[dataset_name], desc=f"Running `{algorithm}` on `{dataset_name}` dataset"):
             if algorithm == "apriori":
                 apriori(filepath, min_freq, True)
     
