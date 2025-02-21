@@ -142,38 +142,40 @@ def extract_dataset_name(filepath):
     return filepath.split("/")[1]
 
 
-def manage_output(all_frequent_itemsets, filepath, minFrequency, is_test):
+def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
     """
-    Manages the output of the Apriori algorithm by either printing results or saving them to a file.
+    Manages the output of a variant of the Apriori algorithm by either printing results or saving them to a file.
 
     This function sorts the frequent itemsets, then:
     - If `is_test` is False, it prints the results to the terminal.
-    - If `is_test` is True, it saves the results to a file in the "solutions/apriori" directory.
+    - If `is_test` is True, it saves the results to a file in the "solutions/variant_name" directory.
 
     Parameters:
     -----------
-    all_frequent_itemsets : list of tuples
+    itemsets : list of tuples
         A list of tuples where each tuple contains a frequent itemset (as a sorted list) and its support value.
-    filepath : str
-        The path of the dataset file, used to extract the dataset name for file saving.
+    variant_name : str
+        The name of the Apriori algorithm's variant.
+    dataset_name : str
+        The dataset name for file saving.
     minFrequency : float
         The minimum frequency threshold used to generate frequent itemsets.
     is_test : bool
         A flag that determines whether to print the output (False) or save it to a file for testing (True).
     """
-    all_frequent_itemsets.sort(key=lambda x: (x[0]))
+    itemsets.sort(key=lambda x: (x[0]))
 
     if not is_test:
-        for itemset, support in all_frequent_itemsets:
+        for itemset, support in itemsets:
             print(f"{itemset} ({support:.17g})")
     
     if is_test:
         import os
-        output_dir = "solutions/apriori"
+        output_dir = f"solutions/{variant_name}"
         os.makedirs(output_dir, exist_ok=True)
 
-        with open(os.path.join(output_dir, f"{extract_dataset_name(filepath)}_{minFrequency}"), "w") as f:
-            for itemset, support in all_frequent_itemsets:
+        with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
+            for itemset, support in itemsets:
                 f.write(f"{itemset} ({support:.3g})\n")
 
 
@@ -219,7 +221,7 @@ def apriori(filepath, minFrequency, is_test=False):
         F_i = {itemset for itemset, count in candidate_counts.items() if count >= min_support}
         i += 1
 
-    manage_output(all_frequent_itemsets, filepath, minFrequency, is_test)
+    manage_output(all_frequent_itemsets, "apriori", extract_dataset_name(filepath), minFrequency, is_test)
 
 
 def alternative_miner(filepath, minFrequency):
