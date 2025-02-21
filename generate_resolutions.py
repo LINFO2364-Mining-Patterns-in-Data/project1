@@ -42,22 +42,25 @@ DATASETS = {
 
 
 def generate_res():
-    if len(sys.argv) != 2:
-        print("Usage: python generate_resolutions.py <dataset_name>")
-        print("Example: python main.py toy")
+    if len(sys.argv) != 3:
+        print("Usage: python generate_resolutions.py <dataset_name> <algorithm>")
+        print("Example: python main.py toy apriori")
         print("Available datasets:", ", ".join(DATASETS.keys()) + ", all")
         sys.exit(1)
 
     dataset_name = sys.argv[1]
+    algorithm = sys.argv[2]
 
     if dataset_name == "all":
-        for name, runs in tqdm(DATASETS.items(), desc=f"Running Apriori on {name} dataset"):
+        for name, runs in tqdm(DATASETS.items(), desc=f"Running {algorithm} on {name} dataset"):
             for filepath, min_freq in runs:
-                apriori(filepath, min_freq, True)
+                if algorithm == "apriori":
+                    apriori(filepath, min_freq, True)
     
     elif dataset_name in DATASETS:
-        for filepath, min_freq in tqdm(DATASETS[dataset_name], desc=f"Running Apriori on {dataset_name} dataset"):
-            apriori(filepath, min_freq, True)
+        for filepath, min_freq in tqdm(DATASETS[dataset_name], desc=f"Running {algorithm} on {dataset_name} dataset"):
+            if algorithm == "apriori":
+                apriori(filepath, min_freq, True)
     
     else:
         print(f"Error: Unknown dataset '{dataset_name}'.")
