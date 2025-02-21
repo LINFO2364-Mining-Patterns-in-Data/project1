@@ -1,6 +1,5 @@
 import sys
 import re
-from tqdm import tqdm
 
 DATASETS = {
     "toy": [
@@ -81,10 +80,13 @@ def compare_solution_files(expected_file, actual_file):
 
 def run_comparisons(dataset_name, algorithm):
     if dataset_name == "all":
-        for name, runs in tqdm(DATASETS.items(), desc=f"Checking {algorithm} on {name} dataset"):
+        for name, runs in DATASETS.items():
+            print(f"\nChecking {algorithm} on {name} dataset:")
             for _, min_freq in runs:
                 compare_solution_files(f"solutions/sols/{name}_{min_freq}", f"solutions/{algorithm}/{name}_{min_freq}")
+    
     elif dataset_name in DATASETS:
+        print(f"\nChecking {algorithm} on {dataset_name} dataset:")
         for _, min_freq in DATASETS[dataset_name]:
             compare_solution_files(f"solutions/sols/{dataset_name}_{min_freq}", f"solutions/{algorithm}/{dataset_name}_{min_freq}")
     else:
