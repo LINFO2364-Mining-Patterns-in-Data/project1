@@ -1,5 +1,6 @@
-import sys
 from frequent_itemset_miner import apriori
+import sys
+import time
 from tqdm import tqdm
 
 DATASETS = {
@@ -69,4 +70,7 @@ def generate_res():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     generate_res()
+    end_time = time.time()
+    print(f"\nExecution time: {end_time - start_time:.4f} seconds")
