@@ -165,7 +165,7 @@ def manage_output(all_frequent_itemsets, filepath, minFrequency, is_test):
 
     if not is_test:
         for itemset, support in all_frequent_itemsets:
-            print(f"{itemset} ({support:.3g})")
+            print(f"{itemset} ({support:.17g})")
     
     if is_test:
         import os
