@@ -176,7 +176,9 @@ def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
 
         with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
             for itemset, support in itemsets:
-                f.write(f"{itemset} ({support:.3g})\n")
+                #f.write(f"{itemset} ({support:.3g})\n") -> error pour les cas de checker (1) et pas (1.0S)
+                f.write(f"{itemset} ({support:.15f})\n")
+                
 
 
 def apriori(filepath, minFrequency, is_test=False):
@@ -224,7 +226,107 @@ def apriori(filepath, minFrequency, is_test=False):
     manage_output(all_frequent_itemsets, "apriori", extract_dataset_name(filepath), minFrequency, is_test)
 
 
-def alternative_miner(filepath, minFrequency):
-    """Runs the alternative frequent itemset mining algorithm on the specified file with the given minimum frequency"""
-    # TODO: either second implementation of the apriori algorithm or implementation of the depth first search algorithm
-    print("Not implemented")
+
+def alternative_miner(filepath, minFrequency, is_test=False):
+    """
+    Runs the alternative frequent itemset mining algorithm on the specified file with the given minimum frequency (DFS/ECLAT)
+    """
+    print(" - START", 10*"-")
+    print(" - Filepath : ",filepath)
+    # -------------------------------------------------------------------------
+    # 1) Read the dataset
+    print(" - STEP 1 : Read the db")
+    transactions, _ = read_transactions(filepath)
+    #print(transactions)
+    num_transactions = len(transactions)
+    min_support = minFrequency * num_transactions
+    #print("min_support   : ",min_support)
+
+    # -------------------------------------------------------------------------
+    # 2) Build a vertical database: for each item, which transaction IDs (TIDs) contain it?
+    vertical_db = {}
+    for tid, transaction in enumerate(transactions):
+        for item in transaction:
+            if item not in vertical_db:
+                vertical_db[item] = set()
+            vertical_db[item].add(tid)
+
+    print(" - STEP 2 : Build the vertical-db")
+    #print(vertical_db)
+
+    # Sort items so we generate itemsets
+    all_items = sorted(vertical_db.keys(), key=lambda x: int(x))
+    #print(" - All items : ",all_items)
+
+    # A list to hold all frequent itemsets found
+    all_frequent_itemsets = []
+
+    # DFS function to find frequent itemsets
+    def eclat(prefix, prefix_tids, items, vertical_db):
+        # For each candidate item in 'items', try to extend the prefix
+        for i in range(len(items)):
+            item = items[i]
+            # Intersect TIDs to find the new set of common transactions
+            new_tids = prefix_tids & vertical_db[item]
+            # Check if this new itemset is still frequent
+            if len(new_tids) >= min_support:
+
+                # Build the extended prefix
+                new_prefix = prefix + [int(item)]
+
+                # Store it in all_frequent_itemsets
+                frequency = len(new_tids) / num_transactions
+                all_frequent_itemsets.append((sorted(new_prefix), frequency))
+
+                # Extend with items that come after the current one
+                new_items = items[i+1:]
+
+
+                # Build a smaller vertical DB for these new candidates
+                new_vertical_db = {}
+                for next_item in new_items:
+                    # Intersect TIDs with new_tids
+                    intersected = vertical_db[next_item] & new_tids
+                    if len(intersected) >= min_support:
+                        new_vertical_db[next_item] = intersected
+
+
+                # Recurse
+                #print(20*"-")
+                #print("RECURSE ECLAT :")
+                #print("new_prefix  :\n ",new_prefix)
+                #print("new_tids  :\n", new_tids)
+                #print("list(new_vertical_db.keys())  :\n",list(new_vertical_db.keys()))
+                #print("new_vertical_db  : \n",new_vertical_db)
+                #print(20*"-")
+                eclat(new_prefix, new_tids, list(new_vertical_db.keys()), new_vertical_db)
+
+    # -------------------------------------------------------------------------
+    # 3) Call the DFS function starting from an empty prefix and all items
+    #    prefix_tids is the set of all TIDs initially
+    print(" - STEP 3 : Call the DFS function")
+
+    prefix=[]
+    prefix_tids=set(range(num_transactions)) 
+    items=all_items
+    vertical_db=vertical_db
+
+    print(20*"-")
+    print("ECLAT :")
+    print("prefix  :\n ",prefix)
+    print("prefix_tids  :\n", prefix_tids)
+    print("items  :\n",items)
+    print("vertical_db  : \n",vertical_db)
+    print(20*"-")
+
+    eclat(prefix=[],
+          prefix_tids=set(range(num_transactions)), 
+          items=all_items,
+          vertical_db=vertical_db)
+
+    # -------------------------------------------------------------------------
+    # 4) Output
+    print(" - STEP 4 : Generate output")
+    #print("all_frequent_itemsets  :\n", all_frequent_itemsets)
+    manage_output(all_frequent_itemsets, "alternative_miner", extract_dataset_name(filepath), minFrequency, is_test)
+    print(" - DONE", 10*"-", "\n")

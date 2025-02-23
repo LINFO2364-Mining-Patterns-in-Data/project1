@@ -1,4 +1,4 @@
-from frequent_itemset_miner import apriori
+from frequent_itemset_miner import apriori, alternative_miner
 import sys
 import time
 from tqdm import tqdm
@@ -57,11 +57,16 @@ def generate_res():
             for filepath, min_freq in tqdm(DATASETS[name], desc=f"Running `{algorithm}` on `{name}` dataset"):
                 if algorithm == "apriori":
                     apriori(filepath, min_freq, True)
+                if algorithm == "alternative_miner":
+                    alternative_miner(filepath, min_freq,True)
+
     
     elif dataset_name in DATASETS:
         for filepath, min_freq in tqdm(DATASETS[dataset_name], desc=f"Running `{algorithm}` on `{dataset_name}` dataset"):
             if algorithm == "apriori":
                 apriori(filepath, min_freq, True)
+            if algorithm == "alternative_miner":
+                alternative_miner(filepath, min_freq,True)
     
     else:
         print(f"Error: Unknown dataset '{dataset_name}'.")

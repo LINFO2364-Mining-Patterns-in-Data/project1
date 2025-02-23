@@ -1,4 +1,4 @@
-from frequent_itemset_miner import apriori
+from frequent_itemset_miner import apriori, alternative_miner
 import sys
 
 DATASETS = {
@@ -48,12 +48,16 @@ def generate_res(dataset_name, algorithm):
                 print(f"\nDataset: {name}, Min Frequency: {min_freq}:")
                 if algorithm == "apriori":
                     apriori(filepath, min_freq)
+                if algorithm == "alternative_miner":
+                    alternative_miner(filepath, min_freq)
     
     elif dataset_name in DATASETS:
         for filepath, min_freq in DATASETS[dataset_name]:
             print(f"\nDataset: {dataset_name}, Min Frequency: {min_freq}:")
             if algorithm == "apriori":
                 apriori(filepath, min_freq)
+            if algorithm == "alternative_miner":
+                    alternative_miner(filepath, min_freq)
     
     else:
         print(f"Error: Unknown dataset '{dataset_name}'.")
