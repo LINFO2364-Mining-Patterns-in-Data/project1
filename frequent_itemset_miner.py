@@ -156,7 +156,7 @@ def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
 
     if not is_test:
         for itemset, support in itemsets:
-            print(f"{itemset} ({support:.17g})")
+            print(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})")
     
     if is_test:
         import os
@@ -165,8 +165,7 @@ def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
 
         with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
             for itemset, support in itemsets:
-                #f.write(f"{itemset} ({support:.3g})\n") -> error pour les cas de checker (1) et pas (1.0S)
-                f.write(f"{itemset} ({support:.15f})\n")
+                f.write(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})\n")
                 
 
 
