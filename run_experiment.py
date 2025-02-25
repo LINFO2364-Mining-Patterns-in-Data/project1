@@ -87,4 +87,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         run_experiments(sys.argv[1])
     else:
-        run_experiments(sys.argv[1], sys.argv[2])
+        run_experiments(sys.argv[1], int(sys.argv[2]))
