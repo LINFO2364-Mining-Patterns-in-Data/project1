@@ -166,12 +166,11 @@ def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
         with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
             for itemset, support in itemsets:
                 f.write(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})\n")
-                
 
 
-def apriori(filepath, minFrequency, is_test=False):
+def apriori_pruning(filepath, minFrequency, is_test=False):
     """
-    Runs the apriori algorithm on the specified file with the given minimum frequency.
+    Runs the apriori algorithm variant with pruning, on the specified file with the given minimum frequency.
 
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
@@ -206,7 +205,57 @@ def apriori(filepath, minFrequency, is_test=False):
 
         F_i = {itemset for itemset, count in candidate_counts.items() if count >= min_support}
         i += 1
-    manage_output(all_frequent_itemsets, "apriori", extract_dataset_name(filepath), minFrequency, is_test)
+    manage_output(all_frequent_itemsets, "apriori_pruning", extract_dataset_name(filepath), minFrequency, is_test)
+
+
+def apriori_no_pruning(filepath, minFrequency, is_test=False):
+    """
+    Runs the apriori algorithm variant without pruning, on the specified file with the given minimum frequency, without pruning.
+
+    :param filepath: Path to the transaction dataset file
+    :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
+    :param boolean is_test: Flag indicating whether this run is a test (default: False)
+    """
+    transactions, num_transactions = read_transactions(filepath)
+    min_support = minFrequency * num_transactions
+
+    F_i = {frozenset([item]) for item, count in get_count_items(transactions).items() if count >= min_support}
+
+    all_frequent_itemsets = []
+    i = 1
+    while F_i:
+        for itemset in F_i:
+            support = sum(1 for transaction in transactions if itemset.issubset(transaction)) / num_transactions
+            all_frequent_itemsets.append((sorted(map(int, itemset)), support))
+
+        C_i = set()
+        F_i_list = list(F_i)
+        for j in range(len(F_i_list)):
+            for k in range(j + 1, len(F_i_list)):
+                candidate = F_i_list[j] | F_i_list[k]
+                if len(candidate) == i + 1:
+                    C_i.add(candidate)
+
+        candidate_counts = {c: 0 for c in C_i}
+        for transaction in transactions:
+            for candidate in C_i:
+                if candidate.issubset(transaction):
+                    candidate_counts[candidate] += 1
+
+        F_i = {itemset for itemset, count in candidate_counts.items() if count >= min_support}
+        i += 1
+    manage_output(all_frequent_itemsets, "apriori_no_pruning", extract_dataset_name(filepath), minFrequency, is_test)
+
+
+def apriori(filepath, minFrequency, is_test=False):
+    """
+    Runs an apriori algorithm variant for Inginious, on the specified file with the given minimum frequency.
+
+    :param filepath: Path to the transaction dataset file
+    :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
+    :param boolean is_test: Flag indicating whether this run is a test (default: False)
+    """
+    apriori_pruning(filepath, minFrequency, is_test)
 
 
 def eclat(prefix_tids, items, vertical_db, min_support, num_transactions, prefix=[]):
