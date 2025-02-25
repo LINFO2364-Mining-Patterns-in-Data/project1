@@ -8,7 +8,7 @@ from tqdm import tqdm
 from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, alternative_miner
 
 
-ALGORITHMS = ["apriori_no_pruning", "apriori_pruning", "alternative_miner"]
+ALGORITHMS = ["alternative_miner", "apriori_pruning", "apriori_no_pruning"]
 THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
 RESULTS_DIR = "results_experiment"
 TIMEOUT_LIMIT = 1000
@@ -58,8 +58,8 @@ def run_algorithm_with_timeout(target_func, args, timeout):
 def run_experiments(dataset, num_runs=1):
     results_file = setup_results_file(dataset)
 
-    for algorithm in ALGORITHMS:
-        for threshold in tqdm(THRESHOLDS, desc=f"Running experiment for `{algorithm}` on `{dataset}`"):
+    for threshold in THRESHOLDS:
+        for algorithm in tqdm(ALGORITHMS, desc=f"Running experiment for `{threshold}` on `{dataset}`"):
             for run in range(1, num_runs + 1):
                 algorithm_func = None
 
@@ -73,10 +73,10 @@ def run_experiments(dataset, num_runs=1):
                 if algorithm_func is not None:
                     elapsed_time = run_algorithm_with_timeout(
                         algorithm_func, 
-                        (f"Datasets/{dataset}/{dataset}.dat", threshold, True), 
+                        (f"Datasets/{dataset}/{dataset}.dat", threshold, False, True), 
                         TIMEOUT_LIMIT
                     )
-                    save_results(results_file, run, dataset, threshold, elapsed_time)
+                    save_results(results_file, run, algorithm, threshold, elapsed_time)
 
 
 if __name__ == "__main__":

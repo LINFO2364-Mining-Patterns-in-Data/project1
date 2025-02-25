@@ -95,11 +95,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                     start_time = time.time()
                     
                     if algorithm == "apriori_no_pruning":
-                        apriori_no_pruning(filepath, min_freq, True)
+                        apriori_no_pruning(filepath, min_freq, False, False)
                     elif algorithm == "apriori_pruning":
-                        apriori_pruning(filepath, min_freq, True)
+                        apriori_pruning(filepath, min_freq, False, False)
                     elif algorithm == "alternative_miner":
-                        alternative_miner(filepath, min_freq,True)
+                        alternative_miner(filepath, min_freq, False, False)
                     else:
                         print(f"Error: Unknown algorithm '{algorithm}'.")
                         print("Available algorithms: apriori_no_pruning, apriori_pruning, alternative_miner")
@@ -113,11 +113,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                 start_time = time.time()
 
                 if algorithm == "apriori_no_pruning":
-                    apriori_no_pruning(filepath, min_freq, True)
+                    apriori_no_pruning(filepath, min_freq, False, False)
                 elif algorithm == "apriori_pruning":
-                    apriori_pruning(filepath, min_freq, True)
+                    apriori_pruning(filepath, min_freq, False, False)
                 elif algorithm == "alternative_miner":
-                    alternative_miner(filepath, min_freq,True)
+                    alternative_miner(filepath, min_freq, False, False)
                 else:
                     print(f"Error: Unknown algorithm '{algorithm}'.")
                     print("Available algorithms: apriori_no_pruning, apriori_pruning, alternative_miner")

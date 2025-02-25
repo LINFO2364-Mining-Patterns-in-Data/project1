@@ -138,43 +138,45 @@ def extract_dataset_name(filepath):
     return filepath.split("/")[1]
 
 
-def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_test):
+def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_inginious, is_test):
     """
     Manages the output of a variant of the Apriori algorithm by either printing results or saving them to a file.
 
     This function sorts the frequent itemsets, then:
-    - If `is_test` is False, it prints the results to the terminal.
-    - If `is_test` is True, it saves the results to a file in the "solutions/variant_name" directory.
+    - If `is_inginious` is True, it prints the results to the terminal.
+    - If `is_test` is False, it saves the results to a file in the "solutions/variant_name" directory.
 
     :param set itemsets: List of tuples, each containing a frequent itemset and its support value
     :param str variant_name: Name of the Apriori algorithm's variant
     :param str dataset_name: Name of the dataset for file saving
     :param int minFrequency: Minimum frequency threshold used to generate frequent itemsets
-    :param boolean is_test: Flag indicating whether to print output (False) or save to a file (True)
+    :param boolean is_inginious: Flag indicating whether to print output (True) or not (False)
+    :param boolean is_test: Flag indicating whether to save output to a file (False) or not (True)
     """
     itemsets.sort(key=lambda x: (x[0]))
 
-    if not is_test:
+    if is_inginious:
         for itemset, support in itemsets:
             print(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})")
-    
-    if is_test:
-        import os
-        output_dir = f"solutions/{variant_name}"
-        os.makedirs(output_dir, exist_ok=True)
+    else:
+        if not is_test:
+            import os
+            output_dir = f"solutions/{variant_name}"
+            os.makedirs(output_dir, exist_ok=True)
 
-        with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
-            for itemset, support in itemsets:
-                f.write(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})\n")
+            with open(os.path.join(output_dir, f"{dataset_name}_{minFrequency}"), "w") as f:
+                for itemset, support in itemsets:
+                    f.write(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})\n")
 
 
-def apriori_pruning(filepath, minFrequency, is_test=False):
+def apriori_pruning(filepath, minFrequency, is_inginious=True, is_test=False):
     """
     Runs the apriori algorithm variant with pruning, on the specified file with the given minimum frequency.
 
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    :param boolean is_test: Flag indicating whether this run is a test (default: False)
+    :param boolean is_inginious: Flag indicating whether this run is for Inginious or not (default: True)
+    :param boolean is_test: Flag indicating whether this run is a test or not (default: False)
     """
     transactions, num_transactions = read_transactions(filepath)
     min_support = minFrequency * num_transactions
@@ -205,16 +207,17 @@ def apriori_pruning(filepath, minFrequency, is_test=False):
 
         F_i = {itemset for itemset, count in candidate_counts.items() if count >= min_support}
         i += 1
-    manage_output(all_frequent_itemsets, "apriori_pruning", extract_dataset_name(filepath), minFrequency, is_test)
+    manage_output(all_frequent_itemsets, "apriori_pruning", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
 
 
-def apriori_no_pruning(filepath, minFrequency, is_test=False):
+def apriori_no_pruning(filepath, minFrequency, is_inginious=True, is_test=False):
     """
     Runs the apriori algorithm variant without pruning, on the specified file with the given minimum frequency, without pruning.
 
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    :param boolean is_test: Flag indicating whether this run is a test (default: False)
+    :param boolean is_inginious: Flag indicating whether this run is for Inginious or not (default: True)
+    :param boolean is_test: Flag indicating whether this run is a test or not (default: False)
     """
     transactions, num_transactions = read_transactions(filepath)
     min_support = minFrequency * num_transactions
@@ -244,18 +247,17 @@ def apriori_no_pruning(filepath, minFrequency, is_test=False):
 
         F_i = {itemset for itemset, count in candidate_counts.items() if count >= min_support}
         i += 1
-    manage_output(all_frequent_itemsets, "apriori_no_pruning", extract_dataset_name(filepath), minFrequency, is_test)
+    manage_output(all_frequent_itemsets, "apriori_no_pruning", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
 
 
-def apriori(filepath, minFrequency, is_test=False):
+def apriori(filepath, minFrequency):
     """
     Runs an apriori algorithm variant for Inginious, on the specified file with the given minimum frequency.
 
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    :param boolean is_test: Flag indicating whether this run is a test (default: False)
     """
-    apriori_pruning(filepath, minFrequency, is_test)
+    apriori_pruning(filepath, minFrequency, True, False)
 
 
 def eclat(prefix_tids, items, vertical_db, min_support, num_transactions, prefix=[]):
@@ -311,13 +313,14 @@ def create_vertical_db(transactions):
     return vertical_db
 
 
-def alternative_miner(filepath, minFrequency, is_test=False):
+def alternative_miner(filepath, minFrequency, is_inginious=True, is_test=False):
     """
     Runs the alternative frequent itemset mining algorithm on the specified file with the given minimum frequency (DFS/ECLAT).
     
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    :param boolean is_test: Flag indicating whether this run is a test (default: False)
+    :param boolean is_inginious: Flag indicating whether this run is for Inginious or not (default: True)
+    :param boolean is_test: Flag indicating whether this run is a test or not (default: False)
     """
     transactions, num_transactions = read_transactions(filepath)
     min_support = minFrequency * num_transactions
@@ -329,4 +332,4 @@ def alternative_miner(filepath, minFrequency, is_test=False):
     prefix_tids = set(range(num_transactions))
     all_frequent_itemsets = eclat(prefix_tids, all_items, vertical_db, min_support, num_transactions)
 
-    manage_output(all_frequent_itemsets, "alternative_miner", extract_dataset_name(filepath), minFrequency, is_test)
+    manage_output(all_frequent_itemsets, "alternative_miner", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
