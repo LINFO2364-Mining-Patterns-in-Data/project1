@@ -57,17 +57,18 @@ def run_algorithm_with_timeout(target_func, args, timeout):
 
 def run_experiments(dataset, num_runs=1):
     results_file = setup_results_file(dataset)
+    has_timeout_already = [False, False, False]
 
     for threshold in THRESHOLDS:
         for algorithm in tqdm(ALGORITHMS, desc=f"Running experiment for `{threshold}` on `{dataset}`"):
             for run in range(1, num_runs + 1):
                 algorithm_func = None
 
-                if algorithm == "apriori_no_pruning":
+                if algorithm == "apriori_no_pruning" and not has_timeout_already[0]:
                     algorithm_func = apriori_no_pruning
-                elif algorithm == "apriori_pruning":
+                elif algorithm == "apriori_pruning" and not has_timeout_already[1]:
                     algorithm_func = apriori_pruning
-                elif algorithm == "alternative_miner":
+                elif algorithm == "alternative_miner" and not has_timeout_already[2]:
                     algorithm_func = alternative_miner
 
                 if algorithm_func is not None:
@@ -77,6 +78,10 @@ def run_experiments(dataset, num_runs=1):
                         TIMEOUT_LIMIT
                     )
                     save_results(results_file, run, algorithm, threshold, elapsed_time)
+                    if np.isnan(elapsed_time):
+                        has_timeout_already[ALGORITHMS.index(algorithm)] = True
+                else:
+                    save_results(results_file, run, algorithm, threshold, np.nan)
 
 
 if __name__ == "__main__":
