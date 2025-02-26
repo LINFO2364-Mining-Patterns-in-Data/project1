@@ -5,10 +5,10 @@ import os
 import multiprocessing
 import numpy as np
 from tqdm import tqdm
-from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, alternative_miner
+from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, eclat
 
 
-ALGORITHMS = ["alternative_miner", "apriori_pruning", "apriori_no_pruning"]
+ALGORITHMS = ["eclat", "apriori_pruning", "apriori_no_pruning"]
 THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
 RESULTS_DIR = "results_experiment"
 TIMEOUT_LIMIT = 1000
@@ -68,8 +68,8 @@ def run_experiments(dataset, num_runs=1):
                     algorithm_func = apriori_no_pruning
                 elif algorithm == "apriori_pruning" and not has_timeout_already[1]:
                     algorithm_func = apriori_pruning
-                elif algorithm == "alternative_miner" and not has_timeout_already[0]:
-                    algorithm_func = alternative_miner
+                elif algorithm == "eclat" and not has_timeout_already[0]:
+                    algorithm_func = eclat
 
                 if algorithm_func is not None:
                     elapsed_time = run_algorithm_with_timeout(
