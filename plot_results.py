@@ -37,7 +37,7 @@ def plot_algorithm_results(algorithm_name):
 
     for i, row in agg_df.iterrows():
         plt.errorbar(
-            x=i,  # x-position of the bar
+            x=i,
             y=row["mean_time"],
             yerr=row["std_time"],
             fmt='none',
@@ -51,8 +51,6 @@ def plot_algorithm_results(algorithm_name):
     plt.title(f"Runtime Comparison Across Datasets for {algorithm_name}")
     plt.legend(title="Datasets", loc="upper right", frameon=True)
     plt.tight_layout()
-    
-    # Save plot
     plt.savefig(os.path.join(PLOTS_DIR, f"{algorithm_name}_runtime_comparison.png"), dpi=300)
     plt.close()
 
@@ -83,16 +81,22 @@ def plot_dataset_results(dataset_name):
         x="threshold_pct",
         y="mean_time",
         hue="algorithm",
-        marker="o",
-        linewidth=1
+        style="algorithm",
+        markers=True,
+        dashes=False,
+        linewidth=1,
+        err_style="bars",
+        errorbar=("sd")
     )
+
     plt.yscale("log")
     plt.xlabel("Minimum Support (%)")
     plt.ylabel("Total Time (sec) (Log Scale)")
-    plt.title("Algorithm Runtime Comparison on Different Minimum Support Thresholds")
-    plt.legend(title="Algorithm", bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.title(f"Algorithms Runtime Comparison on {dataset_name} Dataset for Different Minimum Support Thresholds")
+    plt.legend(title="Algorithm", loc="upper left", frameon=True)
+    plt.gca().invert_xaxis()
     plt.tight_layout()
-    plt.savefig(f"{dataset_name}_by_algorithms.png", dpi=300)
+    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_by_algorithms.png", dpi=300)
 
 
 def process_files_in_folder():
