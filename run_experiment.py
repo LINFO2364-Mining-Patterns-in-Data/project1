@@ -9,8 +9,9 @@ from tqdm import tqdm
 from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, eclat
 
 ALGORITHMS = ["eclat", "apriori_pruning", "apriori_no_pruning"]
+THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.15, 0.1, 0.05, 0.01, 0.005, 0.001]
 # THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
-THRESHOLDS = [0.5, 0.1, 0.05, 0.01, 0.005, 0.001]
+# THRESHOLDS = [0.5, 0.1, 0.05, 0.01, 0.005, 0.001]
 RESULTS_DIR = "results_experiment"
 TIMEOUT_LIMIT = 1000
 
@@ -61,7 +62,7 @@ def run_algorithm_with_timeout(target_func, args, timeout):
 
     return queue.get() if not queue.empty() else (np.nan, np.nan)
 
-def run_experiments(dataset, num_runs=1):
+def run_experiments(dataset, num_runs=5):
     results_file = setup_results_file(dataset)
     has_timeout_already = [False, False, False]
 
