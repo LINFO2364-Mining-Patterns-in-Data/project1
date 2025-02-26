@@ -69,6 +69,7 @@ def plot_dataset_runtime(df, dataset_name):
     """
     Plots the runtime of algorithms over different thresholds for a dataset.
     """
+    import matplotlib.ticker as mticker
     df["threshold_pct"] = df["threshold"] * 100
 
     agg_df = df.groupby(["threshold_pct", "algorithm"]).agg(
@@ -95,7 +96,8 @@ def plot_dataset_runtime(df, dataset_name):
         errorbar=("sd")
     )
 
-    # plt.yscale("log")
+    plt.yscale("log")
+    plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter("{x:.0f}"))
     # plt.xscale("log")
     plt.xlabel("Minimum Support (%)")
     plt.ylabel("Runtime (sec) (Log Scale)")
