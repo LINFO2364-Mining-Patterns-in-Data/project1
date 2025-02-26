@@ -1,4 +1,4 @@
-from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, alternative_miner
+from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, eclat
 import sys
 import time
 import csv
@@ -98,11 +98,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                         apriori_no_pruning(filepath, min_freq, False, False)
                     elif algorithm == "apriori_pruning":
                         apriori_pruning(filepath, min_freq, False, False)
-                    elif algorithm == "alternative_miner":
-                        alternative_miner(filepath, min_freq, False, False)
+                    elif algorithm == "eclat":
+                        eclat(filepath, min_freq, False, False)
                     else:
                         print(f"Error: Unknown algorithm '{algorithm}'.")
-                        print("Available algorithms: apriori_no_pruning, apriori_pruning, alternative_miner")
+                        print("Available algorithms: apriori_no_pruning, apriori_pruning, eclat")
                         sys.exit(1)
                     
                     save_results(algorithm, i+1, name, min_freq, time.time() - start_time)
@@ -116,11 +116,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                     apriori_no_pruning(filepath, min_freq, False, False)
                 elif algorithm == "apriori_pruning":
                     apriori_pruning(filepath, min_freq, False, False)
-                elif algorithm == "alternative_miner":
-                    alternative_miner(filepath, min_freq, False, False)
+                elif algorithm == "eclat":
+                    eclat(filepath, min_freq, False, False)
                 else:
                     print(f"Error: Unknown algorithm '{algorithm}'.")
-                    print("Available algorithms: apriori_no_pruning, apriori_pruning, alternative_miner")
+                    print("Available algorithms: apriori_no_pruning, apriori_pruning, eclat")
                     sys.exit(1)
 
                 save_results(algorithm, i+1, name, min_freq, time.time() - start_time)
