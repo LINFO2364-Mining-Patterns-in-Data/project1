@@ -7,7 +7,7 @@ import seaborn as sns
 RESULTS_DIR = "results_experiment/"
 PLOTS_DIR = "plots/"
 DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
-ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "alternative_miner"}
+ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
 
 
 def load_algorithm_results(algorithm_name):
@@ -75,8 +75,9 @@ def plot_dataset_results(dataset_name):
     min_x = agg_df["threshold_pct"].min()
     max_x = agg_df["threshold_pct"].max()
 
-    plt.figure(figsize=(10, 6))
-    sns.set_style("whitegrid")
+    plt.figure(figsize=(7, 5))
+    sns.set_style("white")
+    sns.set_palette("grey")  # Force grayscale
 
     sns.lineplot(
         data=agg_df,
@@ -84,19 +85,20 @@ def plot_dataset_results(dataset_name):
         y="mean_time",
         hue="algorithm",
         style="algorithm",
-        markers=True,
-        dashes=False,
-        linewidth=1,
+        markers=True,       # Different markers to distinguish lines
+        dashes=True,        # Use different dashes instead of colors
+        linewidth=1.2,
         err_style="bars",
         errorbar=("sd")
     )
 
     plt.yscale("log")
     plt.xlabel("Minimum Support (%)")
-    plt.ylabel("Total Time (sec) (Log Scale)")
-    plt.title(f"Algorithms Runtime Comparison on {dataset_name} Dataset for Different Minimum Support Thresholds")
-    plt.legend(title="Algorithm", loc="upper left", frameon=True)
+    plt.ylabel("Runtime (sec) (Log Scale)")
+    plt.title(f"Database: {dataset_name}")
+    plt.legend(title="Algorithm", loc="upper left", frameon=False)
 
+    plt.grid(False)
     plt.xlim(min_x, max_x)
     plt.gca().invert_xaxis()
     plt.tight_layout()
