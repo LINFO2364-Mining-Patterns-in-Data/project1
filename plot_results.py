@@ -6,7 +6,7 @@ import seaborn as sns
 
 RESULTS_DIR = "results_experiment/"
 PLOTS_DIR = "plots/"
-DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
+DATASETS = {"accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
 ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
 ALGORITHMS_NAMES = {
         "apriori_no_pruning": "Naive Apriori",
