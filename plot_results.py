@@ -79,7 +79,7 @@ def plot_dataset_runtime(df, dataset_name):
     min_x = agg_df["threshold_pct"].min()
     max_x = agg_df["threshold_pct"].max()
 
-    plt.figure(figsize=(7, 5))
+    plt.figure(figsize=(7, 4))
     sns.set_style("white")
     sns.set_palette("grey")  # Force grayscale
 
@@ -99,17 +99,21 @@ def plot_dataset_runtime(df, dataset_name):
     plt.yscale("log")
     plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter("{x:.0f}"))
     # plt.xscale("log")
-    plt.xlabel("Minimum Support (%)")
-    plt.ylabel("Runtime (sec) (Log Scale)")
-    plt.title(f"Database: {dataset_name}")
-    plt.legend(title="Algorithm:", loc="upper left", frameon=False)
+
+    plt.xlabel("Minimum Support (%)", fontsize=14)
+    plt.ylabel("Runtime (sec) (Log Scale)", fontsize=14)
+    plt.title(f"Database: {dataset_name}", fontsize=14)
+
+    legend = plt.legend(loc="upper left", frameon=False)
+    plt.setp(legend.get_texts(), fontsize=14)
+    # plt.setp(legend.get_title(), fontsize=14)
 
     plt.grid(False)
     plt.xlim(min_x, max_x)
     plt.gca().invert_xaxis()
     plt.tight_layout()
 
-    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_by_algorithms.png", dpi=300)
+    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_algo.png", dpi=300)
     plt.close()
 
 
@@ -155,7 +159,7 @@ def plot_dataset_memory(df, dataset_name):
     g.set(yscale="linear")
     g.tight_layout()
     
-    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_memory_usage.png", dpi=300)
+    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_memory.png", dpi=300)
     plt.close()
 
 
