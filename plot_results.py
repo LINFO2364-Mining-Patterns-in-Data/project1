@@ -9,7 +9,7 @@ PLOTS_DIR = "plots/"
 DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
 ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
 ALGORITHMS_NAMES = {
-        "apriori_no_pruning": "Apriori",
+        "apriori_no_pruning": "Naive Apriori",
         "apriori_pruning": "Apriori Pruning",
         "eclat": "Eclat"
     }
