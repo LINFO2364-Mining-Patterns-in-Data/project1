@@ -6,8 +6,14 @@ import seaborn as sns
 
 RESULTS_DIR = "results_experiment/"
 PLOTS_DIR = "plots/"
-DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
+DATASETS = {"toy", "accidents", "chess", "connect", "pumsb", "retail"}
+# DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
 ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
+ALGORITHMS_NAMES = {
+        "apriori_no_pruning": "Apriori",
+        "apriori_pruning": "Apriori Pruning",
+        "eclat": "Eclat"
+    }
 
 
 def load_algorithm_results(algorithm_name):
@@ -60,12 +66,10 @@ def load_dataset_results(dataset_name):
     df = df.dropna()
     return df
 
-def plot_dataset_results(dataset_name):
+def plot_dataset_runtime(df, dataset_name):
     """
-    Plots the impact of algorithms and threshold over the dataset.
+    Plots the runtime of algorithms over different thresholds for a dataset.
     """
-    df = load_dataset_results(dataset_name)
-
     df["threshold_pct"] = df["threshold"] * 100
 
     agg_df = df.groupby(["threshold_pct", "algorithm"]).agg(
@@ -92,7 +96,8 @@ def plot_dataset_results(dataset_name):
         errorbar=("sd")
     )
 
-    plt.yscale("log")
+    # plt.yscale("log")
+    # plt.xscale("log")
     plt.xlabel("Minimum Support (%)")
     plt.ylabel("Runtime (sec) (Log Scale)")
     plt.title(f"Database: {dataset_name}")
@@ -104,6 +109,62 @@ def plot_dataset_results(dataset_name):
     plt.tight_layout()
 
     plt.savefig(f"{PLOTS_DIR}/{dataset_name}_by_algorithms.png", dpi=300)
+    plt.close()
+
+
+def plot_dataset_memory(df, dataset_name):
+    """
+    Plots a bar plot of max memory usage per algorithm, grouped by threshold using catplot.
+    """
+    df["threshold_pct"] = df["threshold"] * 100
+    
+    agg_df = df.groupby(["threshold_pct", "algorithm"]).agg(
+        mean_memory=("max_memory", "mean")
+    ).reset_index()
+    
+    algorithm_order = ["apriori_no_pruning", "apriori_pruning", "eclat"]
+    
+    # Map algorithm names
+    agg_df["algorithm"] = agg_df["algorithm"].map(ALGORITHMS_NAMES)
+    
+    # Adjust order based on display names
+    display_algorithm_order = [ALGORITHMS_NAMES[alg] for alg in algorithm_order]
+    agg_df["algorithm"] = pd.Categorical(agg_df["algorithm"], categories=display_algorithm_order, ordered=True)
+    
+    agg_df = agg_df.sort_values(by=["threshold_pct", "algorithm"], ascending=[False, True])
+    
+    sns.set_style("whitegrid")
+    
+    g = sns.catplot(
+        data=agg_df,
+        x="algorithm",
+        y="mean_memory",
+        hue="algorithm",
+        hue_order=display_algorithm_order,
+        kind="bar",
+        col="threshold_pct",
+        col_wrap=2,
+        height=3,
+        aspect=1.2,
+        legend=False
+    )
+    
+    g.set_axis_labels("", "Max Memory Usage (MB)")
+    g.set_titles("Minimum support: {col_name} (%)")
+    g.set(yscale="linear")
+    g.tight_layout()
+    
+    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_memory_usage.png", dpi=300)
+    plt.close()
+
+
+def plot_dataset_results(dataset_name):
+    """
+    Plots the impact of algorithms and threshold over the dataset.
+    """
+    df = load_dataset_results(dataset_name)
+    plot_dataset_runtime(df, dataset_name)
+    plot_dataset_memory(df, dataset_name)
 
 
 def process_files_in_folder():

@@ -1,4 +1,4 @@
-run,algorithm,threshold,time
+run,algorithm,threshold,time,max_memory
 1,alternative_miner,0.9,0.067731
 2,alternative_miner,0.9,0.067711
 3,alternative_miner,0.9,0.07331
