@@ -95,11 +95,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                     start_time = time.time()
                     
                     if algorithm == "apriori_no_pruning":
-                        apriori_no_pruning(filepath, min_freq, False, False)
+                        apriori_no_pruning(filepath, min_freq, False, True)
                     elif algorithm == "apriori_pruning":
-                        apriori_pruning(filepath, min_freq, False, False)
+                        apriori_pruning(filepath, min_freq, False, True)
                     elif algorithm == "eclat":
-                        eclat(filepath, min_freq, False, False)
+                        eclat(filepath, min_freq, False, True)
                     else:
                         print(f"Error: Unknown algorithm '{algorithm}'.")
                         print("Available algorithms: apriori_no_pruning, apriori_pruning, eclat")
@@ -113,11 +113,11 @@ def generate_res(dataset_name, algorithm, num_runs):
                 start_time = time.time()
 
                 if algorithm == "apriori_no_pruning":
-                    apriori_no_pruning(filepath, min_freq, False, False)
+                    apriori_no_pruning(filepath, min_freq, False, True)
                 elif algorithm == "apriori_pruning":
-                    apriori_pruning(filepath, min_freq, False, False)
+                    apriori_pruning(filepath, min_freq, False, True)
                 elif algorithm == "eclat":
-                    eclat(filepath, min_freq, False, False)
+                    eclat(filepath, min_freq, False, True)
                 else:
                     print(f"Error: Unknown algorithm '{algorithm}'.")
                     print("Available algorithms: apriori_no_pruning, apriori_pruning, eclat")
