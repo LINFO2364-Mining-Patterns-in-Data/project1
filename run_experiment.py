@@ -64,11 +64,11 @@ def run_experiments(dataset, num_runs=1):
             for run in range(1, num_runs + 1):
                 algorithm_func = None
 
-                if algorithm == "apriori_no_pruning" and not has_timeout_already[0]:
+                if algorithm == "apriori_no_pruning" and not has_timeout_already[2]:
                     algorithm_func = apriori_no_pruning
                 elif algorithm == "apriori_pruning" and not has_timeout_already[1]:
                     algorithm_func = apriori_pruning
-                elif algorithm == "alternative_miner" and not has_timeout_already[2]:
+                elif algorithm == "alternative_miner" and not has_timeout_already[0]:
                     algorithm_func = alternative_miner
 
                 if algorithm_func is not None:
