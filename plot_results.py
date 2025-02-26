@@ -72,6 +72,8 @@ def plot_dataset_results(dataset_name):
         mean_time=("time", "mean"),
         std_time=("time", "std")
     ).reset_index()
+    min_x = agg_df["threshold_pct"].min()
+    max_x = agg_df["threshold_pct"].max()
 
     plt.figure(figsize=(10, 6))
     sns.set_style("whitegrid")
@@ -94,8 +96,11 @@ def plot_dataset_results(dataset_name):
     plt.ylabel("Total Time (sec) (Log Scale)")
     plt.title(f"Algorithms Runtime Comparison on {dataset_name} Dataset for Different Minimum Support Thresholds")
     plt.legend(title="Algorithm", loc="upper left", frameon=True)
+
+    plt.xlim(min_x, max_x)
     plt.gca().invert_xaxis()
     plt.tight_layout()
+
     plt.savefig(f"{PLOTS_DIR}/{dataset_name}_by_algorithms.png", dpi=300)
 
 
