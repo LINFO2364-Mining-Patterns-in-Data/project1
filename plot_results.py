@@ -6,8 +6,7 @@ import seaborn as sns
 
 RESULTS_DIR = "results_experiment/"
 PLOTS_DIR = "plots/"
-DATASETS = {"toy", "accidents", "chess", "connect", "pumsb", "retail"}
-# DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
+DATASETS = {"toy", "accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
 ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
 ALGORITHMS_NAMES = {
         "apriori_no_pruning": "Apriori",
@@ -101,7 +100,7 @@ def plot_dataset_runtime(df, dataset_name):
     plt.xlabel("Minimum Support (%)")
     plt.ylabel("Runtime (sec) (Log Scale)")
     plt.title(f"Database: {dataset_name}")
-    plt.legend(title="Algorithm", loc="upper left", frameon=False)
+    plt.legend(title="Algorithm:", loc="upper left", frameon=False)
 
     plt.grid(False)
     plt.xlim(min_x, max_x)
