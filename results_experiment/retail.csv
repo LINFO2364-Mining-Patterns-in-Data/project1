@@ -186,3 +186,6 @@ run,algorithm,threshold,time,max_memory
 5,eclat,0.005,4.086519,63.62
 1,apriori_pruning,0.005,119.29558,45.49
 2,apriori_pruning,0.005,120.886902,45.48
+3,apriori_pruning,0.005,122.796823,45.48
+4,apriori_pruning,0.005,123.049087,45.51
+5,apriori_pruning,0.005,122.72371,45.51
