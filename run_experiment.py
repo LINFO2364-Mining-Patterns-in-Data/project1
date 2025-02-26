@@ -9,7 +9,7 @@ from frequent_itemset_miner import apriori_no_pruning, apriori_pruning, alternat
 
 
 ALGORITHMS = ["alternative_miner", "apriori_pruning", "apriori_no_pruning"]
-THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
+THRESHOLDS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
 RESULTS_DIR = "results_experiment"
 TIMEOUT_LIMIT = 1000
 
