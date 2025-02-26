@@ -169,7 +169,7 @@ def manage_output(itemsets, variant_name, dataset_name, minFrequency, is_inginio
                     f.write(f"{itemset} ({'1.0' if support == 1 else f'{support:.17g}'})\n")
 
 
-def apriori_pruning(filepath, minFrequency, is_inginious=True, is_test=False):
+def apriori_pruning(filepath, minFrequency, is_inginious=False, is_test=True):
     """
     Runs the apriori algorithm variant with pruning, on the specified file with the given minimum frequency.
 
@@ -210,7 +210,7 @@ def apriori_pruning(filepath, minFrequency, is_inginious=True, is_test=False):
     manage_output(all_frequent_itemsets, "apriori_pruning", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
 
 
-def apriori_no_pruning(filepath, minFrequency, is_inginious=True, is_test=False):
+def apriori_no_pruning(filepath, minFrequency, is_inginious=False, is_test=True):
     """
     Runs the apriori algorithm variant without pruning, on the specified file with the given minimum frequency, without pruning.
 
@@ -250,17 +250,7 @@ def apriori_no_pruning(filepath, minFrequency, is_inginious=True, is_test=False)
     manage_output(all_frequent_itemsets, "apriori_no_pruning", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
 
 
-def apriori(filepath, minFrequency):
-    """
-    Runs an apriori algorithm variant for Inginious, on the specified file with the given minimum frequency.
-
-    :param filepath: Path to the transaction dataset file
-    :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    """
-    apriori_pruning(filepath, minFrequency, True, False)
-
-
-def eclat(prefix_tids, items, vertical_db, min_support, num_transactions, prefix=[]):
+def eclat_search(prefix_tids, items, vertical_db, min_support, num_transactions, prefix=[]):
     """
     Recursive DFS/ECLAT function to find frequent itemsets.
     
@@ -291,7 +281,7 @@ def eclat(prefix_tids, items, vertical_db, min_support, num_transactions, prefix
                 if len(intersected) >= min_support:
                     new_vertical_db[next_item] = intersected
 
-            deeper_frequent_itemsets = eclat(new_tids, list(new_vertical_db.keys()), new_vertical_db,
+            deeper_frequent_itemsets = eclat_search(new_tids, list(new_vertical_db.keys()), new_vertical_db,
                                              min_support, num_transactions, prefix=new_prefix)
             all_frequent_itemsets.extend(deeper_frequent_itemsets)
     return all_frequent_itemsets
@@ -313,14 +303,14 @@ def create_vertical_db(transactions):
     return vertical_db
 
 
-def alternative_miner(filepath, minFrequency, is_inginious=True, is_test=False):
+def eclat(filepath, minFrequency, is_inginious=False, is_test=False):
     """
-    Runs the alternative frequent itemset mining algorithm on the specified file with the given minimum frequency (DFS/ECLAT).
+    Runs the ECLAT frequent itemset mining algorithm on the specified file with the given minimum frequency.
     
     :param filepath: Path to the transaction dataset file
     :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
-    :param boolean is_inginious: Flag indicating whether this run is for Inginious or not (default: True)
-    :param boolean is_test: Flag indicating whether this run is a test or not (default: False)
+    :param boolean is_inginious: Flag indicating whether this run is for Inginious or not (default: False)
+    :param boolean is_test: Flag indicating whether this run is a test or not (default: True)
     """
     transactions, num_transactions = read_transactions(filepath)
     min_support = minFrequency * num_transactions
@@ -330,6 +320,26 @@ def alternative_miner(filepath, minFrequency, is_inginious=True, is_test=False):
     all_items = sorted(vertical_db.keys(), key=lambda x: int(x))
 
     prefix_tids = set(range(num_transactions))
-    all_frequent_itemsets = eclat(prefix_tids, all_items, vertical_db, min_support, num_transactions)
+    all_frequent_itemsets = eclat_search(prefix_tids, all_items, vertical_db, min_support, num_transactions)
 
-    manage_output(all_frequent_itemsets, "alternative_miner", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
+    manage_output(all_frequent_itemsets, "eclat", extract_dataset_name(filepath), minFrequency, is_inginious, is_test)
+
+
+def apriori(filepath, minFrequency):
+    """
+    Runs an apriori algorithm variant for Inginious, on the specified file with the given minimum frequency.
+
+    :param filepath: Path to the transaction dataset file
+    :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
+    """
+    apriori_pruning(filepath, minFrequency, True, True)
+
+
+def alternative_miner(filepath, minFrequency):
+    """
+    Runs the alternative frequent itemset mining algorithm on the specified file with the given minimum frequency (DFS/ECLAT).
+    
+    :param filepath: Path to the transaction dataset file
+    :param int minFrequency: Minimum frequency threshold to determine frequent itemsets
+    """
+    eclat(filepath, minFrequency, True, True)
