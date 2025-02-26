@@ -123,9 +123,10 @@ def process_files_in_folder():
 
 
 if __name__ == "__main__":
+    print("Plotting results of experiment...")
+    
     import warnings
     warnings.simplefilter(action='ignore', category=FutureWarning)
 
-    print("Plotting results of experiment...")
     os.makedirs(PLOTS_DIR, exist_ok=True)
     process_files_in_folder()
