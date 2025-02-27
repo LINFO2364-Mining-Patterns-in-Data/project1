@@ -113,54 +113,106 @@ def plot_dataset_runtime(df, dataset_name):
     plt.gca().invert_xaxis()
     plt.tight_layout()
 
-    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_algo.png", dpi=300)
+    plt.savefig(f"{PLOTS_DIR}/{dataset_name}_runtime.png", dpi=300)
     plt.close()
 
 
 def plot_dataset_memory(df, dataset_name):
     """
-    Plots a bar plot of max memory usage per algorithm, grouped by threshold using catplot.
+    Plots the runtime of algorithms over different thresholds for a dataset.
     """
+    import matplotlib.ticker as mticker
     df["threshold_pct"] = df["threshold"] * 100
-    
+
     agg_df = df.groupby(["threshold_pct", "algorithm"]).agg(
-        mean_memory=("max_memory", "mean")
+        mean_memory=("max_memory", "mean"),
+        std_memory=("max_memory", "std")
     ).reset_index()
-    
-    algorithm_order = ["apriori_no_pruning", "apriori_pruning", "eclat"]
-    
-    # Map algorithm names
-    agg_df["algorithm"] = agg_df["algorithm"].map(ALGORITHMS_NAMES)
-    
-    # Adjust order based on display names
-    display_algorithm_order = [ALGORITHMS_NAMES[alg] for alg in algorithm_order]
-    agg_df["algorithm"] = pd.Categorical(agg_df["algorithm"], categories=display_algorithm_order, ordered=True)
-    
-    agg_df = agg_df.sort_values(by=["threshold_pct", "algorithm"], ascending=[False, True])
-    
-    sns.set_style("whitegrid")
-    
-    g = sns.catplot(
+    min_x = agg_df["threshold_pct"].min()
+    max_x = agg_df["threshold_pct"].max()
+
+    plt.figure(figsize=(7, 4))
+    sns.set_style("white")
+    sns.set_palette("grey")  # Force grayscale
+
+    sns.lineplot(
         data=agg_df,
-        x="algorithm",
+        x="threshold_pct",
         y="mean_memory",
         hue="algorithm",
-        hue_order=display_algorithm_order,
-        kind="bar",
-        col="threshold_pct",
-        col_wrap=2,
-        height=3,
-        aspect=1.2,
-        legend=False
+        style="algorithm",
+        markers=True,       # Different markers to distinguish lines
+        dashes=True,        # Use different dashes instead of colors
+        linewidth=1.2,
+        err_style="bars",
+        errorbar=("sd")
     )
-    
-    g.set_axis_labels("", "Max Memory Usage (MB)")
-    g.set_titles("Minimum support: {col_name} (%)")
-    g.set(yscale="linear")
-    g.tight_layout()
-    
+
+    plt.yscale("log")
+    plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter("{x:.0f}"))
+    # plt.xscale("log")
+
+    plt.xlabel("Minimum Support (%)", fontsize=14)
+    plt.ylabel("Main Memory (MB) (Log Scale)", fontsize=14)
+    plt.title(f"Database: {dataset_name}", fontsize=14)
+
+    legend = plt.legend(loc="upper left", frameon=False)
+    plt.setp(legend.get_texts(), fontsize=14)
+    # plt.setp(legend.get_title(), fontsize=14)
+
+    plt.grid(False)
+    plt.xlim(min_x, max_x)
+    plt.gca().invert_xaxis()
+    plt.tight_layout()
+
     plt.savefig(f"{PLOTS_DIR}/{dataset_name}_memory.png", dpi=300)
     plt.close()
+
+
+# def plot_dataset_memory(df, dataset_name):
+#     """
+#     Plots a bar plot of max memory usage per algorithm, grouped by threshold using catplot.
+#     """
+#     df["threshold_pct"] = df["threshold"] * 100
+    
+#     agg_df = df.groupby(["threshold_pct", "algorithm"]).agg(
+#         mean_memory=("max_memory", "mean")
+#     ).reset_index()
+    
+#     algorithm_order = ["apriori_no_pruning", "apriori_pruning", "eclat"]
+    
+#     # Map algorithm names
+#     agg_df["algorithm"] = agg_df["algorithm"].map(ALGORITHMS_NAMES)
+    
+#     # Adjust order based on display names
+#     display_algorithm_order = [ALGORITHMS_NAMES[alg] for alg in algorithm_order]
+#     agg_df["algorithm"] = pd.Categorical(agg_df["algorithm"], categories=display_algorithm_order, ordered=True)
+    
+#     agg_df = agg_df.sort_values(by=["threshold_pct", "algorithm"], ascending=[False, True])
+    
+#     sns.set_style("whitegrid")
+    
+#     g = sns.catplot(
+#         data=agg_df,
+#         x="algorithm",
+#         y="mean_memory",
+#         hue="algorithm",
+#         hue_order=display_algorithm_order,
+#         kind="bar",
+#         col="threshold_pct",
+#         col_wrap=2,
+#         height=3,
+#         aspect=1.2,
+#         legend=False
+#     )
+    
+#     g.set_axis_labels("", "Max Memory Usage (MB)")
+#     g.set_titles("Minimum support: {col_name} (%)")
+#     g.set(yscale="linear")
+#     g.tight_layout()
+    
+#     plt.savefig(f"{PLOTS_DIR}/{dataset_name}_memory.png", dpi=300)
+#     plt.close()
 
 
 def plot_dataset_results(dataset_name):
