@@ -100,12 +100,12 @@ def plot_dataset_runtime(df, dataset_name):
     plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter("{x:.0f}"))
     # plt.xscale("log")
 
-    plt.xlabel("Minimum Support (%)", fontsize=14)
-    plt.ylabel("Runtime (sec) (Log Scale)", fontsize=14)
-    plt.title(f"Database: {dataset_name}", fontsize=14)
+    plt.xlabel("Minimum Support (%)", fontsize=16)
+    plt.ylabel("CPU Runtime (s)", fontsize=16)
+    # plt.title(f"Database: {dataset_name}", fontsize=14)
 
     legend = plt.legend(loc="upper left", frameon=False)
-    plt.setp(legend.get_texts(), fontsize=14)
+    plt.setp(legend.get_texts(), fontsize=16)
     # plt.setp(legend.get_title(), fontsize=14)
 
     plt.grid(False)
@@ -152,12 +152,12 @@ def plot_dataset_memory(df, dataset_name):
     plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter("{x:.0f}"))
     # plt.xscale("log")
 
-    plt.xlabel("Minimum Support (%)", fontsize=14)
-    plt.ylabel("Main Memory (MB) (Log Scale)", fontsize=14)
-    plt.title(f"Database: {dataset_name}", fontsize=14)
+    plt.xlabel("Minimum Support (%)", fontsize=16)
+    plt.ylabel("Main Memory (MB)", fontsize=16)
+    # plt.title(f"Database: {dataset_name}", fontsize=14)
 
     legend = plt.legend(loc="upper left", frameon=False)
-    plt.setp(legend.get_texts(), fontsize=14)
+    plt.setp(legend.get_texts(), fontsize=16)
     # plt.setp(legend.get_title(), fontsize=14)
 
     plt.grid(False)
