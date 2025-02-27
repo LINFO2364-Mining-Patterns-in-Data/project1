@@ -1,7 +1,7 @@
-database,items,transactions
-accidents.dat,468,340183
-chess.dat,75,3196
-connect.dat,129,67557
-mushroom.dat,119,8124
-pumsb.dat,2113,49046
-retail.dat,16470,88162
+database,items,transactions,density
+accidents,468,340183,0.0722
+chess,75,3196,0.4933
+connect,129,67557,0.3333
+mushroom,119,8124,0.1933
+pumsb,2113,49046,0.035
+retail,16470,88162,0.0006

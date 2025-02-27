@@ -8,13 +8,14 @@ OUTPUT_CSV = "datasets_summary.csv"
 
 def process_dataset(filepath):
     """
-    Reads a dataset file, counts unique items and transactions in a single pass.
+    Reads a dataset file, counts unique items, transactions, and estimates density.
 
     :param str filepath: Path to the dataset file
-    :return Tuple: database name, unique item count, transaction count
+    :return Tuple: database name, unique item count, transaction count, density
     """
     unique_items = set()
     transaction_count = 0
+    total_items_count = 0
 
     with open(filepath, 'r') as file:
         for line in file:
@@ -23,9 +24,15 @@ def process_dataset(filepath):
                 transaction = set(map(int, line.split()))
                 unique_items.update(transaction)
                 transaction_count += 1
+                total_items_count += len(transaction)
 
-    database_name = os.path.basename(filepath)
-    return database_name, len(unique_items), transaction_count
+    database_name = os.path.splitext(os.path.basename(filepath))[0]
+    
+    num_items = len(unique_items)
+
+    density = total_items_count / (transaction_count * num_items) if num_items > 0 else 0
+
+    return database_name, num_items, transaction_count, density
 
 def process_all_datasets():
     """
@@ -35,16 +42,16 @@ def process_all_datasets():
 
     for dataset in tqdm(DATASETS, desc="Processing datasets"):
         dataset_path = os.path.join(f"{DATASETS_DIR}/{dataset}/", f"{dataset}.dat")
-        db_name, num_items, num_transactions = process_dataset(dataset_path)
-        results.append((db_name, num_items, num_transactions))
+        db_name, num_items, num_transactions, density = process_dataset(dataset_path)
+        results.append((db_name, num_items, num_transactions, round(density, 4)))
 
-
-    with open(f"{DATASETS_DIR}/{OUTPUT_CSV}", "w", newline="") as csvfile:
+    output_path = os.path.join(DATASETS_DIR, OUTPUT_CSV)
+    with open(output_path, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["database", "items", "transactions"])
+        writer.writerow(["database", "items", "transactions", "density"])
         writer.writerows(results)
 
-    print(f"Results saved to {DATASETS_DIR}/{OUTPUT_CSV}")
+    print(f"Results saved to {output_path}")
 
 if __name__ == "__main__":
     process_all_datasets()
