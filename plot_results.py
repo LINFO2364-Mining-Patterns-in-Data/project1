@@ -9,7 +9,7 @@ PLOTS_DIR = "plots/"
 DATASETS = {"accidents", "chess", "connect", "mushroom", "pumsb", "retail"}
 ALGORITHMS = {"apriori_no_pruning", "apriori_pruning", "eclat"}
 ALGORITHMS_NAMES = {
-        "apriori_no_pruning": "Naive Apriori",
+        "apriori_no_pruning": "Apriori Naive",
         "apriori_pruning": "Apriori Pruning",
         "eclat": "Eclat"
     }
@@ -76,6 +76,11 @@ def plot_dataset_runtime(df, dataset_name):
         mean_time=("time", "mean"),
         std_time=("time", "std")
     ).reset_index()
+
+    agg_df["algorithm"] = agg_df["algorithm"].map(ALGORITHMS_NAMES)
+    display_algorithm_order = [ALGORITHMS_NAMES[alg] for alg in ALGORITHMS]
+    agg_df["algorithm"] = pd.Categorical(agg_df["algorithm"], categories=display_algorithm_order, ordered=True)
+
     min_x = agg_df["threshold_pct"].min()
     max_x = agg_df["threshold_pct"].max()
 
@@ -130,6 +135,10 @@ def plot_dataset_memory(df, dataset_name):
     ).reset_index()
     min_x = agg_df["threshold_pct"].min()
     max_x = agg_df["threshold_pct"].max()
+
+    agg_df["algorithm"] = agg_df["algorithm"].map(ALGORITHMS_NAMES)
+    display_algorithm_order = [ALGORITHMS_NAMES[alg] for alg in ALGORITHMS]
+    agg_df["algorithm"] = pd.Categorical(agg_df["algorithm"], categories=display_algorithm_order, ordered=True)
 
     plt.figure(figsize=(7, 4))
     sns.set_style("white")
